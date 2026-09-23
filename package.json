@@ -1,0 +1,7 @@
+{
+  "name": "intracranial-decision-study",
+  "private": true,
+  "scripts": {
+    "test": "node test_service.js"
+  }
+}
