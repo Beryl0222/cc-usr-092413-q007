@@ -1,4 +1,4 @@
-"""验证基础服务在领域功能开发前保持可运行。"""
+"""验证基础服务在领域功能开发后保持可运行。"""
 
 import json
 import threading
@@ -6,14 +6,15 @@ import unittest
 from urllib.error import HTTPError
 from urllib.request import urlopen
 
-from service import Handler, SERVICE_ID, SERVICE_NAME, health_payload
+from service import SERVICE_ID, SERVICE_NAME, build_service, health_payload, make_handler
 
 
 class ServiceContractTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         from http.server import ThreadingHTTPServer
-        cls.server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
+        cls.service = build_service(":memory:")
+        cls.server = ThreadingHTTPServer(("127.0.0.1", 0), make_handler(cls.service))
         cls.thread = threading.Thread(target=cls.server.serve_forever, daemon=True)
         cls.thread.start()
         cls.base_url = f"http://127.0.0.1:{cls.server.server_port}"
